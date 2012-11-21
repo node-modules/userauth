@@ -1,0 +1,1 @@
+module.exports = process.env.USERAUTH_COV ? require('./lib-cov/userauth') : require('./lib/userauth');

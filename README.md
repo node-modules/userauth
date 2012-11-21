@@ -3,7 +3,7 @@ userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](ht
 
 ![logo](https://raw.github.com/fengmk2/userauth/master/logo.png)
 
-Description
+user auth abstraction layer middleware.
 
 * jscoverage: [100%](http://fengmk2.github.com/coverage/userauth.html)
 
@@ -16,11 +16,33 @@ $ npm install userauth
 ## Usage
 
 ```js
+var connect = require('connect');
 var userauth = require('userauth');
 
-userauth.foo(function (err) {
-  
-});
+var app = connect(
+  connect.cookieParser(),
+  connect.session({
+    secret: 'i m secret'
+  }),
+  connect.query(),
+  // /user* all these urls must login first
+  userauth(/^\/user/i, {
+    // auth system login url
+    loginURLForamter: function (url) {
+      return 'http://login.demo.com/login?redirect=' + url;
+    },
+    // login callback and getUser info handler
+    getUser: function (req, callback) {
+      var token = req.query.token;
+      proxy.checkToken(token, function (err, info) {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, info);
+      });
+    },
+  })
+);
 ```
 
 ## License 

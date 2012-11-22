@@ -3,7 +3,7 @@ userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](ht
 
 ![logo](https://raw.github.com/fengmk2/userauth/master/logo.png)
 
-user auth abstraction layer middleware.
+`connect` user auth abstraction layer middleware.
 
 * jscoverage: [100%](http://fengmk2.github.com/coverage/userauth.html)
 
@@ -14,6 +14,8 @@ $ npm install userauth
 ```
 
 ## Usage
+
+`userauth` is dependent on `connect.session()` and `connect.query()`.
 
 ```js
 var connect = require('connect');
@@ -43,6 +45,22 @@ var app = connect(
     },
   })
 );
+```
+
+## Login flow
+
+```js
+/**
+ * login flow:
+ *
+ * 1. unauth user, redirect to `$loginPath?redirect=$currentURL`
+ * 2. user visit `$loginPath`, redirect to `options.loginURLForamter()` return login url.
+ * 3. user visit $loginCallbackPath, handler login callback logic.
+ * 4. If user login callback check success, will set `req.session[userField]`, 
+ *    and redirect to `$currentURL`.
+ * 5. If login check callback error, next(err).
+ * 6. user visit `$logoutPath`, set `req.session[userField] = null`, and redirect back.
+ */
 ```
 
 ## License 

@@ -37,10 +37,13 @@ describe('userauth.test.js', function () {
           if (req.headers.mockempty) {
             return callback();
           }
-          callback(null, {
-            nick: 'mock user',
-            userid: 1234
-          });
+          if (req.headers.mocklogin) {
+            return callback(null, {
+              nick: 'mock user',
+              userid: 1234
+            });
+          }
+          return callback(null, req.session.user);
         });
       },
     })
@@ -148,6 +151,7 @@ describe('userauth.test.js', function () {
   it('should login success and visit /user/foo status 200', function (done) {
     request(app)
     .get('/login/callback')
+    .set('mocklogin', 1)
     .expect('Location', '/')
     .expect('Set-Cookie', /^connect\.sid\=/)
     .expect(undefined)
@@ -177,6 +181,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/login/callback')
       .set('Cookie', cookie)
+      .set('mocklogin', 1)
       .expect('Location', '/')
       .expect(undefined)
       .expect(302, done);
@@ -195,6 +200,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/login/callback')
       .set('Cookie', cookie)
+      .set('mocklogin', 1)
       .expect('Location', '/')
       .expect(undefined)
       .expect(302, done);
@@ -213,6 +219,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/login/callback')
       .set('Cookie', cookie)
+      .set('mocklogin', 1)
       .expect('Location', '/foo/bar')
       .expect(undefined)
       .expect(302, done);
@@ -231,6 +238,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/login/callback?foo')
       .set('Cookie', cookie)
+      .set('mocklogin', 1)
       .expect('Location', '/')
       .expect(undefined)
       .expect(302, done);
@@ -298,10 +306,26 @@ describe('userauth.test.js', function () {
     .expect(200, done);
   });
 
+  it('should login directly when use contain logined token', function (done) {
+    request(app)
+    .get('/user/foo')
+    .set('mocklogin', 1)
+    .expect({"user":{"nick":"mock user","userid":1234},"message":"GET /user/foo"})
+    .expect(200, done);
+  });
+
+  it('should return mock getUser error when getUser directly', function (done) {
+    request(app)
+    .get('/user/foo')
+    .set('mockerror', 1)
+    .expect({ error: 'mock getUser error', message: 'GET /user/foo' })
+    .expect(500, done);
+  });
+
   it('should return 200 status and user info after user logined', function (done) {
     request(app)
     .get('/login/callback')
-    .set({ Cookie: 'cookie2=1234' })
+    .set('mocklogin', 1)
     .expect('Location', '/')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -337,7 +361,7 @@ describe('userauth.test.js', function () {
   it('should return 302 to / what ever visit logincallback', function (done) {
     request(app)
     .get('/login/callback')
-    .set({ Cookie: 'cookie2=1234' })
+    .set('mocklogin', 1)
     .expect('Location', '/')
     .expect(302, function (err, res) {
       should.not.exist(err);

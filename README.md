@@ -47,6 +47,30 @@ var app = connect(
 );
 ```
 
+### Arguments
+
+```js
+/**
+ * User auth middleware.
+ *
+ * @param {Regex} match, detect which url need to check user auth.
+ * @param {Object} [options]
+ *  - {Function(url)} loginURLForamter, format the login url.
+ *  - {String} [loginPath], default is '/login'.
+ *  - {String} [loginCallbackPath], default is `options.loginPath + '/callback'`.
+ *  - {String} [logoutPath], default is '/logout'.
+ *  - {String} [userField], logined user field name on `req.session`, default is 'user', `req.session.user`.
+ *  - {Function(req, callback)} getUser, get user function, must get user info with `req`.
+ *  - {Function(req, user, callback)} [loginCallback], you can handle user login logic here.
+ *   - {Function(err, user, redirectURL)} callback
+ *  - {Function(req, user, callback)} [logoutCallback], you can handle user logout logic here.
+ *   - {Function(err, redirectURL)} callback
+ * @return {Function(req, res, next)} userauth middleware
+ * @public
+ */
+function userauth(match, options);
+```
+
 ## Login flow
 
 ```js

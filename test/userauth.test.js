@@ -64,7 +64,7 @@ describe('userauth.test.js', function () {
           return callback(null, user);
         });
       },
-      loginCallback: function (user, callback) {
+      loginCallback: function (req, user, callback) {
         process.nextTick(function () {
           if (user.error) {
             return callback(new Error(user.error));
@@ -72,7 +72,7 @@ describe('userauth.test.js', function () {
           callback(null, user, user.redirect);
         });
       },
-      logoutCallback: function (user, callback) {
+      logoutCallback: function (req, user, callback) {
         process.nextTick(function () {
           if (user.error) {
             return callback(new Error(user.error));
@@ -553,6 +553,94 @@ describe('userauth.test.js', function () {
       .expect('Location', '/newurl')
       .expect(302, done);
     });
+  });
+
+  describe('with default options', function () {
+    var app = connect(
+      connect.cookieParser(),
+      connect.session({
+        secret: 'i m secret'
+      }),
+      connect.query(),
+      userauth(/^\/user/i, {
+        loginURLForamter: function (url) {
+          return '/mocklogin?redirect=' + url;
+        },
+        getUser: function (req, callback) {
+          process.nextTick(function () {
+            var user = req.session.user;
+            if (req.headers.mocklogin) {
+              user = {
+                nick: 'mock user',
+                userid: 1234
+              };
+            }
+            return callback(null, user);
+          });
+        }
+      })
+    );
+
+    app.use('/mocklogin', function (req, res, next) {
+      var redirect = req.query.redirect;
+      res.statusCode = 302;
+      res.setHeader('Location', redirect);
+      res.end();
+    });
+
+    app.use(function (req, res, next) {
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        user: req.session.user || null,
+        message: req.method + ' ' + req.url
+      }));
+    });
+
+    app.use(function (err, req, res, next) {
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 500;
+      res.end(JSON.stringify({
+        error: err.message,
+        message: req.method + ' ' + req.url
+      }));
+    });
+
+    it('should return 200 status and user info after user logined', function (done) {
+      request(app)
+      .get('/login/callback')
+      .set('mocklogin', 1)
+      .expect('Location', '/')
+      .expect(302, function (err, res) {
+        should.not.exist(err);
+        var cookie = res.headers['set-cookie'];
+        request(app)
+        .get('/')
+        .set({ Cookie: 'cookie2=1234; ' + cookie })
+        .expect({
+          user: {
+            nick: 'mock user',
+            userid: 1234
+          },
+          message: 'GET /'
+        })
+        .expect(200, function (err, res) {
+          // logout
+          should.not.exist(err);
+          request(app)
+          .get('/logout')
+          .set({ Cookie: 'cookie2=1234; ' + cookie })
+          .expect('Location', '/')
+          .expect(302, function () {
+            request(app)
+            .get('/logout')
+            .set({ referer: '/login' })
+            .expect('Location', '/login')
+            .expect(302, done);
+          });
+        });
+      });
+    });
+
   });
 
 });

@@ -242,28 +242,28 @@ describe('userauth.test.js', function () {
 
     request(app)
     .get('/user')
-    .expect('Location', '/login')
+    .expect('Location', '/login?redirect=%2Fuser')
     .expect(undefined)
     .expect(302, done);
 
     request(app)
     .get('/user/foo')
     .set({ Cookie: 'cookie2=' })
-    .expect('Location', '/login')
+    .expect('Location', '/login?redirect=%2Fuser%2Ffoo')
     .expect(undefined)
     .expect(302, done);
 
     request(app)
     .get('/user/')
     .set({ Cookie: 'cookie2= ;foo=bar' })
-    .expect('Location', '/login')
+    .expect('Location', '/login?redirect=%2Fuser%2F')
     .expect(undefined)
     .expect(302, done);
 
     request(app)
     .get('/user?foo=bar')
     .set('Accept', 'application/json')
-    .expect('Location', '/login')
+    .expect('Location', '/login?redirect=%2Fuser%3Ffoo%3Dbar')
     .expect({ error: '401 Unauthorized' })
     .expect(401, done);
   });
@@ -304,7 +304,6 @@ describe('userauth.test.js', function () {
     .set({ Cookie: 'cookie2=1234' })
     .expect('Location', '/')
     .expect(302, function (err, res) {
-      mm.restore();
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
       request(app)
@@ -335,6 +334,26 @@ describe('userauth.test.js', function () {
     });
   });
 
+  it('should return 302 to / what ever visit logincallback', function (done) {
+    request(app)
+    .get('/login/callback')
+    .set({ Cookie: 'cookie2=1234' })
+    .expect('Location', '/')
+    .expect(302, function (err, res) {
+      should.not.exist(err);
+      var cookie = res.headers['set-cookie'];
+      var times = 10;
+      done = pedding(times, done);
+      for (var i = 0; i < times; i++) {
+        request(app)
+        .get('/login/callback')
+        .set('Cookie', cookie)
+        .expect('Location', '/')
+        .expect(302, done);
+      }      
+    });
+  });
+
   it('should return error when /login/callback request session proxy error', function (done) {
     request(app)
     .get('/login/callback')
@@ -358,7 +377,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/user/')
       .set({ Cookie: cookie })
-      .expect('Location', '/login')
+      .expect('Location', '/login?redirect=%2Fuser%2F')
       .expect(302, done);
     });
 
@@ -373,7 +392,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/user/')
       .set({ Cookie: cookie })
-      .expect('Location', '/login')
+      .expect('Location', '/login?redirect=%2Fuser%2F')
       .expect(302, done);
     });
   });
@@ -418,7 +437,7 @@ describe('userauth.test.js', function () {
       request(app)
       .get('/user/article')
       .set({ Cookie: cookie })
-      .expect('Location', '/login')
+      .expect('Location', '/login?redirect=%2Fuser%2Farticle')
       .expect(302, done);
     });
   });

@@ -1,4 +1,9 @@
 
+0.0.6 / 2012-11-23 
+==================
+
+  * change loginCallback(user, callback) to loginCallback(req, user, callback)
+
 0.0.5 / 2012-11-22 
 ==================
 

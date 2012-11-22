@@ -1,4 +1,10 @@
 
+0.0.4 / 2012-11-22 
+==================
+
+  * add user login directly when login token vaild.
+  * fixed ut
+
 0.0.3 / 2012-11-22 
 ==================
 

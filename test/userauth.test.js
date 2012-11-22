@@ -37,15 +37,49 @@ describe('userauth.test.js', function () {
           if (req.headers.mockempty) {
             return callback();
           }
+          var user = req.session.user;
           if (req.headers.mocklogin) {
-            return callback(null, {
+            user = {
               nick: 'mock user',
               userid: 1234
-            });
+            };
           }
-          return callback(null, req.session.user);
+
+          if (req.headers.mocklogin_redirect) {
+            user.redirect = req.headers.mocklogin_redirect;
+          }
+
+          if (req.headers.mocklogin_callbackerror) {
+            user.error = req.headers.mocklogin_callbackerror;
+          }
+
+          if (req.headers.mocklogout_redirect) {
+            user.redirect = req.headers.mocklogout_redirect;
+          }
+
+          if (req.headers.mocklogout_callbackerror) {
+            user.error = req.headers.mocklogout_callbackerror;
+          }
+
+          return callback(null, user);
         });
       },
+      loginCallback: function (user, callback) {
+        process.nextTick(function () {
+          if (user.error) {
+            return callback(new Error(user.error));
+          }
+          callback(null, user, user.redirect);
+        });
+      },
+      logoutCallback: function (user, callback) {
+        process.nextTick(function () {
+          if (user.error) {
+            return callback(new Error(user.error));
+          }
+          callback(null, user.redirect);
+        });
+      }
     })
   );
 
@@ -462,6 +496,61 @@ describe('userauth.test.js', function () {
       .get('/user/article')
       .set({ Cookie: cookie })
       .expect('Location', '/login?redirect=%2Fuser%2Farticle')
+      .expect(302, done);
+    });
+  });
+
+  it('should mock loginCallback error', function (done) {
+    request(app)
+    .get('/login/callback')
+    .set('mocklogin', 1)
+    .set('mocklogin_callbackerror', 'mock login callback error')
+    .expect({
+      error: 'mock login callback error',
+      message: 'GET /login/callback'
+    })
+    .expect(500, done);
+  });
+
+  it('should mock loginCallback redirect to new url', function (done) {
+    request(app)
+    .get('/login/callback')
+    .set('mocklogin', 1)
+    .set('mocklogin_redirect', '/newurl')
+    .expect('Location', '/newurl')
+    .expect(undefined)
+    .expect(302, done);
+  });
+
+  it('should mock logoutCallback error', function (done) {
+    request(app)
+    .get('/user/foo')
+    .set('mocklogin', 1)
+    .set('mocklogout_callbackerror', 'mock logout callback error')
+    .expect(302, function (err, res) {
+      var cookie = res.headers['set-cookie'][0];
+      request(app)
+      .get('/logout')
+      .set('Cookie', cookie)
+      .expect({
+        error: 'mock logout callback error',
+        message: 'GET /logout'
+      })
+      .expect(500, done);
+    });
+  });
+
+  it('should mock logoutCallback redirect to new url', function (done) {
+    request(app)
+    .get('/user/foo')
+    .set('mocklogin', 1)
+    .set('mocklogout_redirect', '/newurl')
+    .expect(302, function (err, res) {
+      var cookie = res.headers['set-cookie'][0];
+      request(app)
+      .get('/logout')
+      .set('Cookie', cookie)
+      .expect('Location', '/newurl')
       .expect(302, done);
     });
   });

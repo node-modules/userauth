@@ -53,7 +53,7 @@ var app = connect(
 /**
  * User auth middleware.
  *
- * @param {Regex} match, detect which url need to check user auth.
+ * @param {Regex|Function(pathname, req)} match, detect which url need to check user auth.
  * @param {Object} [options]
  *  - {Function(url)} loginURLForamter, format the login url.
  *  - {String} [loginPath], default is '/login'.

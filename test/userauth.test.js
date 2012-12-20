@@ -72,8 +72,9 @@ describe('userauth.test.js', function () {
           callback(null, user, user.loginRedirect);
         });
       },
-      logoutCallback: function (req, user, callback) {
+      logoutCallback: function (req, res, user, callback) {
         process.nextTick(function () {
+          res.setHeader('X-Logout', 'logoutCallback header')
           if (user.logoutError) {
             return callback(new Error(user.logoutError));
           }
@@ -536,6 +537,7 @@ describe('userauth.test.js', function () {
     .get('/user/foo')
     .set('mocklogin', 1)
     .set('mocklogout_callbackerror', 'mock logout callback error')
+    .expect('X-Logout', 'logoutCallback header')
     .expect(302, function (err, res) {
       var cookie = res.headers['set-cookie'][0];
       request(app)

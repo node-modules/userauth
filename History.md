@@ -1,4 +1,10 @@
 
+0.1.0 / 2012-12-20 
+==================
+
+  * change logoutCallback: function (req, res, user, callback)
+  * update readme
+
 0.0.8 / 2012-11-23 
 ==================
 

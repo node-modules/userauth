@@ -1,4 +1,10 @@
 
+0.1.1 / 2013-01-05 
+==================
+
+  * fixed test cases
+  * fixed #1 remove connet.query() dependency.
+
 0.1.0 / 2012-12-20 
 ==================
 

@@ -24,7 +24,7 @@ describe('userauth.test.js', function () {
     connect.session({
       secret: 'i m secret'
     }),
-    connect.query(),
+    // connect.query(),
     userauth(/^\/user/i, {
       loginURLForamter: function (url) {
         return '/mocklogin?redirect=' + url;
@@ -600,7 +600,7 @@ describe('userauth.test.js', function () {
                 userid: 1234
               };
             }
-            return callback(null, user);
+            callback(null, user);
           });
         }
       })
@@ -628,6 +628,13 @@ describe('userauth.test.js', function () {
         error: err.message,
         message: req.method + ' ' + req.url
       }));
+    });
+
+    it('should 302 to mock login', function (done) {
+      request(app)
+      .get('/login')
+      .expect('Location', /^\/mocklogin\?redirect/)
+      .expect(302, done);
     });
 
     it('should return 200 status and user info after user logined', function (done) {

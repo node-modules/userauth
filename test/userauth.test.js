@@ -120,7 +120,7 @@ describe('userauth.test.js', function () {
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Location', /\/login\/callback$/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
@@ -130,7 +130,7 @@ describe('userauth.test.js', function () {
       .get('/login/callback')
       .set('Cookie', cookie)
       .expect('Location', '/')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
 
@@ -138,7 +138,7 @@ describe('userauth.test.js', function () {
     .get('/login?foo=bar')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Location', /\/login\/callback$/)
-    .expect(undefined)
+    .expect('')
     .expect(302, done);
 
     request(app)
@@ -152,7 +152,7 @@ describe('userauth.test.js', function () {
     .get('/login?redirect=user/index')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
@@ -161,7 +161,7 @@ describe('userauth.test.js', function () {
       .get('/login/callback')
       .set('Cookie', cookie)
       .expect('Location', '/')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
 
@@ -169,7 +169,7 @@ describe('userauth.test.js', function () {
     .get('/login?redirect=/index2')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
@@ -178,7 +178,7 @@ describe('userauth.test.js', function () {
       .get('/login/callback')
       .set('Cookie', cookie)
       .expect('Location', '/index2')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
   });
@@ -189,7 +189,7 @@ describe('userauth.test.js', function () {
     .set('mocklogin', 1)
     .expect('Location', '/')
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       var cookie = res.headers['set-cookie'][0];
       request(app)
@@ -208,7 +208,7 @@ describe('userauth.test.js', function () {
     .set('Referer', 'http://demo.com/foo')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
@@ -218,7 +218,7 @@ describe('userauth.test.js', function () {
       .set('Cookie', cookie)
       .set('mocklogin', 1)
       .expect('Location', '/')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
 
@@ -227,7 +227,7 @@ describe('userauth.test.js', function () {
     .set('Referer', 'foo/bar')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'][0];
@@ -237,7 +237,7 @@ describe('userauth.test.js', function () {
       .set('Cookie', cookie)
       .set('mocklogin', 1)
       .expect('Location', '/')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
 
@@ -246,7 +246,7 @@ describe('userauth.test.js', function () {
     .set('Referer', '/foo/bar')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
@@ -256,7 +256,7 @@ describe('userauth.test.js', function () {
       .set('Cookie', cookie)
       .set('mocklogin', 1)
       .expect('Location', '/foo/bar')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
 
@@ -265,7 +265,7 @@ describe('userauth.test.js', function () {
     .set('Referer', '/login')
     .expect('Location', /^\/mocklogin\?redirect\=/)
     .expect('Set-Cookie', /^connect\.sid\=/)
-    .expect(undefined)
+    .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
       var cookie = res.headers['set-cookie'];
@@ -275,7 +275,7 @@ describe('userauth.test.js', function () {
       .set('Cookie', cookie)
       .set('mocklogin', 1)
       .expect('Location', '/')
-      .expect(undefined)
+      .expect('')
       .expect(302, done);
     });
   });
@@ -286,21 +286,21 @@ describe('userauth.test.js', function () {
     request(app)
     .get('/user')
     .expect('Location', '/login?redirect=%2Fuser')
-    .expect(undefined)
+    .expect('')
     .expect(302, done);
 
     request(app)
     .get('/user/foo')
     .set({ Cookie: 'cookie2=' })
     .expect('Location', '/login?redirect=%2Fuser%2Ffoo')
-    .expect(undefined)
+    .expect('')
     .expect(302, done);
 
     request(app)
     .get('/user/')
     .set({ Cookie: 'cookie2= ;foo=bar' })
     .expect('Location', '/login?redirect=%2Fuser%2F')
-    .expect(undefined)
+    .expect('')
     .expect(302, done);
 
     request(app)
@@ -519,7 +519,7 @@ describe('userauth.test.js', function () {
     .set('mocklogin', 1)
     .set('mocklogin_redirect', '/newurl')
     .expect('Location', '/newurl')
-    .expect(undefined)
+    .expect('')
     .expect(302, done);
   });
 

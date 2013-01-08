@@ -80,7 +80,18 @@ describe('userauth.test.js', function () {
           }
           callback(null, user.logoutRedirect);
         });
-      }
+      },
+      redirectHandler: function (req, res, next) {
+        var accept = req.headers.accept;
+        if (accept && accept.indexOf('/javascript') > 0) {
+          // jsonp
+          var jsonpCallback = 'jsonpCallback';
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/javascript');
+          return res.end('jsonpCallback(' + JSON.stringify({ login: false, success: false, message: 'Login first.' }) + ')');
+        }
+        next();
+      },
     })
   );
 
@@ -309,6 +320,12 @@ describe('userauth.test.js', function () {
     .expect('Location', '/login?redirect=%2Fuser%3Ffoo%3Dbar')
     .expect({ error: '401 Unauthorized' })
     .expect(401, done);
+
+    request(app)
+    .get('/user?foo=bar')
+    .set('Accept', 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01')
+    .expect('jsonpCallback({"login":false,"success":false,"message":"Login first."})')
+    .expect(200, done);
   });
 
   it('should 200 status when request url no need to login', function (done) {
@@ -671,6 +688,37 @@ describe('userauth.test.js', function () {
           });
         });
       });
+    });
+
+    it('should redirect to /login when not auth user visit /user* ', function (done) {
+      done = pedding(4, done);
+
+      request(app)
+      .get('/user')
+      .expect('Location', '/login?redirect=%2Fuser')
+      .expect('')
+      .expect(302, done);
+
+      request(app)
+      .get('/user/foo')
+      .set({ Cookie: 'cookie2=' })
+      .expect('Location', '/login?redirect=%2Fuser%2Ffoo')
+      .expect('')
+      .expect(302, done);
+
+      request(app)
+      .get('/user/')
+      .set({ Cookie: 'cookie2= ;foo=bar' })
+      .expect('Location', '/login?redirect=%2Fuser%2F')
+      .expect('')
+      .expect(302, done);
+
+      request(app)
+      .get('/user?foo=bar')
+      .set('Accept', 'application/json')
+      .expect('Location', '/login?redirect=%2Fuser%3Ffoo%3Dbar')
+      .expect({ error: '401 Unauthorized' })
+      .expect(401, done);
     });
 
   });

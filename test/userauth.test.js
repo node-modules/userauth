@@ -300,6 +300,13 @@ describe('userauth.test.js', function () {
     .expect('')
     .expect(302, done);
 
+    // fixed: encodeURIComponent(url) error: URIError: URI malformed
+    request(app)
+    .get('/user/' + String.fromCharCode(0xDFFF))
+    .expect('Location', '/login?redirect=/user/' + String.fromCharCode(0xDFFF))
+    .expect('')
+    .expect(302, done);
+
     request(app)
     .get('/user/foo')
     .set({ Cookie: 'cookie2=' })

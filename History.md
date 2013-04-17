@@ -1,4 +1,9 @@
 
+0.2.0 / 2013-04-17 
+==================
+
+  * fixed: encodeURIComponent(url) error: URIError: URI malformed
+
 0.1.5 / 2013-01-16 
 ==================
 

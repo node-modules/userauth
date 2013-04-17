@@ -5,7 +5,7 @@ userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](ht
 
 `connect` user auth abstraction layer middleware.
 
-* jscoverage: [100%](http://fengmk2.github.com/coverage/userauth.html)
+* jscoverage: [97%](http://fengmk2.github.com/coverage/userauth.html)
 
 ## Install
 
@@ -85,6 +85,21 @@ function userauth(match, options);
  * 5. If login check callback error, next(err).
  * 6. user visit `$logoutPath`, set `req.session[userField] = null`, and redirect back.
  */
+```
+
+## Authors
+
+```bash
+$ git summary 
+
+ project  : userauth
+ repo age : 5 months
+ active   : 10 days
+ commits  : 33
+ files    : 12
+ authors  : 
+    32  fengmk2                 97.0%
+     1  tangyao                 3.0%
 ```
 
 ## License 

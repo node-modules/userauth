@@ -28,6 +28,9 @@
     "login",
     "auth"
   ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
   "author": "fengmk2 <fengmk2@gmail.com>",
   "license": "MIT"
 }

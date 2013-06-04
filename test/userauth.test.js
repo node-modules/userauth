@@ -610,8 +610,7 @@ describe('userauth.test.js', function () {
       connect.session({
         secret: 'i m secret'
       }),
-      // connect.query(),
-      userauth(/^\/hello\/world\/user/i, {
+      userauth(/^\/user/i, {
         loginURLForamter: function (url, rootPath) {
           return rootPath + '/mocklogin?redirect=' + url;
         },

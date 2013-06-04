@@ -604,6 +604,133 @@ describe('userauth.test.js', function () {
     });
   });
 
+  describe('with options.rootPath = "/hello/world"', function () {
+    var app = connect(
+      connect.cookieParser(),
+      connect.session({
+        secret: 'i m secret'
+      }),
+      // connect.query(),
+      userauth(/^\/hello\/world\/user/i, {
+        loginURLForamter: function (url, rootPath) {
+          return rootPath + '/mocklogin?redirect=' + url;
+        },
+        rootPath: '/hello/world',
+        getUser: function (req, callback) {
+          process.nextTick(function () {
+            var user = req.session.user;
+            if (req.headers.mocklogin) {
+              user = {
+                nick: 'mock user',
+                userid: 1234
+              };
+            }
+            callback(null, user);
+          });
+        }
+      })
+    );
+
+    app.use('/mocklogin', function (req, res, next) {
+      var redirect = req.query.redirect;
+      res.statusCode = 302;
+      res.setHeader('Location', redirect);
+      res.end();
+    });
+
+    app.use(function (req, res, next) {
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
+        user: req.session.user || null,
+        message: req.method + ' ' + req.url
+      }));
+    });
+
+    app.use(function (err, req, res, next) {
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 500;
+      res.end(JSON.stringify({
+        error: err.message,
+        message: req.method + ' ' + req.url
+      }));
+    });
+
+    it('should 302 to mock login', function (done) {
+      request(app)
+      .get('/login')
+      .expect('Location', /^\/hello\/world\/mocklogin\?redirect\=http\:\/\/127\.0\.0\.1\:\d+\/hello\/world\/login\/callback$/)
+      .expect(302, done);
+    });
+
+    it('should return 200 status and user info after user logined', function (done) {
+      request(app)
+      .get('/login/callback')
+      .set('mocklogin', 1)
+      .expect('Location', '/hello/world')
+      .expect(302, function (err, res) {
+        should.not.exist(err);
+        var cookie = res.headers['set-cookie'];
+        request(app)
+        .get('/')
+        .set({ Cookie: 'cookie2=1234; ' + cookie })
+        .expect({
+          user: {
+            nick: 'mock user',
+            userid: 1234
+          },
+          message: 'GET /'
+        })
+        .expect(200, function (err, res) {
+          // logout
+          should.not.exist(err);
+          request(app)
+          .get('/logout')
+          .set({ Cookie: 'cookie2=1234; ' + cookie })
+          .expect('Location', '/hello/world')
+          .expect(302, function () {
+            request(app)
+            .get('/logout?a=2')
+            .set({ referer: '/hello/world/app' })
+            .expect('Location', '/hello/world/app')
+            .expect(302, done);
+          });
+        });
+      });
+    });
+
+    it('should redirect to /login when not auth user visit /user* ', function (done) {
+      done = pedding(4, done);
+
+      request(app)
+      .get('/user')
+      .expect('Location', '/hello/world/login?redirect=%2Fuser')
+      .expect('')
+      .expect(302, done);
+
+      request(app)
+      .get('/user/foo')
+      .set({ Cookie: 'cookie2=' })
+      .expect('Location', '/hello/world/login?redirect=%2Fuser%2Ffoo')
+      .expect('')
+      .expect(302, done);
+
+      request(app)
+      .get('/user/')
+      .set({ Cookie: 'cookie2= ;foo=bar' })
+      .expect('Location', '/hello/world/login?redirect=%2Fuser%2F')
+      .expect('')
+      .expect(302, done);
+
+      request(app)
+      .get('/user?foo=bar')
+      .set('Accept', 'application/json')
+      .expect('Location', '/hello/world/login?redirect=%2Fuser%3Ffoo%3Dbar')
+      .expect({ error: '401 Unauthorized' })
+      .expect(401, done);
+    });
+
+  });
+
   describe('with default options', function () {
     var app = connect(
       connect.cookieParser(),

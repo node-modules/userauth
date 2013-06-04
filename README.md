@@ -55,16 +55,18 @@ var app = connect(
  *
  * @param {Regex|Function(pathname, req)} match, detect which url need to check user auth.
  * @param {Object} [options]
- *  - {Function(url)} loginURLForamter, format the login url.
+ *  - {Function(url, rootPath)} loginURLForamter, format the login url.
+ *  - {String} [rootPath], custom app url root path, default is '/'.
  *  - {String} [loginPath], default is '/login'.
  *  - {String} [loginCallbackPath], default is `options.loginPath + '/callback'`.
  *  - {String} [logoutPath], default is '/logout'.
  *  - {String} [userField], logined user field name on `req.session`, default is 'user', `req.session.user`.
  *  - {Function(req, callback)} getUser, get user function, must get user info with `req`.
  *  - {Function(req, user, callback)} [loginCallback], you can handle user login logic here.
- *   - {Function(err, user, redirectURL)} callback
- *  - {Function(req, user, callback)} [logoutCallback], you can handle user logout logic here.
- *   - {Function(err, redirectURL)} callback
+ *    - {Function(err, user, redirectURL)} callback
+ *  - {Function(req)} [loginCheck], return true meaning logined. default is `true`.
+ *  - {Function(req, res, user, callback)} [logoutCallback], you can handle user logout logic here.
+ *    - {Function(err, redirectURL)} callback
  * @return {Function(req, res, next)} userauth middleware
  * @public
  */
@@ -93,13 +95,13 @@ function userauth(match, options);
 $ git summary 
 
  project  : userauth
- repo age : 5 months
- active   : 10 days
- commits  : 33
+ repo age : 7 months
+ active   : 12 days
+ commits  : 39
  files    : 12
  authors  : 
-    32  fengmk2                 97.0%
-     1  tangyao                 3.0%
+    38  fengmk2                 97.4%
+     1  tangyao                 2.6%
 ```
 
 ## License 

@@ -1,4 +1,12 @@
 
+0.2.2 / 2013-06-04 
+==================
+
+  * use blanket instead of jscover
+  * only modified response Location when using custom rootPath
+  * support custom rootPath fixed #4
+  * not support 0.6
+
 0.2.1 / 2013-04-23 
 ==================
 

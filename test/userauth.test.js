@@ -32,7 +32,9 @@ describe('userauth.test.js', function () {
       getUser: function (req, callback) {
         process.nextTick(function () {
           if (req.headers.mockerror) {
-            return callback(new Error('mock getUser error'));
+            var err = new Error('mock getUser error');
+            err.data = {url: req.url};
+            return callback(err);
           }
           if (req.headers.mockempty) {
             return callback();
@@ -373,12 +375,12 @@ describe('userauth.test.js', function () {
     .expect(200, done);
   });
 
-  it('should return mock getUser error when getUser directly', function (done) {
+  it('should return 302 when getUser directly', function (done) {
     request(app)
     .get('/user/foo')
     .set('mockerror', 1)
-    .expect({ error: 'mock getUser error', message: 'GET /user/foo' })
-    .expect(500, done);
+    .expect('Location', '/login?redirect=%2Fuser%2Ffoo')
+    .expect(302, done);
   });
 
   it('should return 200 status and user info after user logined', function (done) {

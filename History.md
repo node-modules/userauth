@@ -1,4 +1,9 @@
 
+0.2.3 / 2013-06-05 
+==================
+
+  * ignore err when current url is not login callback url
+
 0.2.2 / 2013-06-04 
 ==================
 

@@ -1,11 +1,9 @@
-userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](http://travis-ci.org/fengmk2/userauth)
+userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](http://travis-ci.org/fengmk2/userauth) [![Coverage Status](https://coveralls.io/repos/fengmk2/userauth/badge.png)](https://coveralls.io/r/fengmk2/userauth)
 =======
 
 ![logo](https://raw.github.com/fengmk2/userauth/master/logo.png)
 
 `connect` user auth abstraction layer middleware.
-
-* jscoverage: [97%](http://fengmk2.github.com/coverage/userauth.html)
 
 ## Install
 

@@ -617,6 +617,7 @@ describe('userauth.test.js', function () {
           return rootPath + '/mocklogin?redirect=' + url;
         },
         rootPath: '/hello/world',
+        protocol: 'https',
         getUser: function (req, callback) {
           process.nextTick(function () {
             var user = req.session.user;
@@ -659,7 +660,7 @@ describe('userauth.test.js', function () {
     it('should 302 to mock login', function (done) {
       request(app)
       .get('/login')
-      .expect('Location', /^\/hello\/world\/mocklogin\?redirect\=http\:\/\/127\.0\.0\.1\:\d+\/hello\/world\/login\/callback$/)
+      .expect('Location', /^\/hello\/world\/mocklogin\?redirect\=https\:\/\/127\.0\.0\.1\:\d+\/hello\/world\/login\/callback$/)
       .expect(302, done);
     });
 

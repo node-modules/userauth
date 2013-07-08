@@ -294,7 +294,7 @@ describe('userauth.test.js', function () {
   });
 
   it('should redirect to /login when not auth user visit /user* ', function (done) {
-    done = pedding(4, done);
+    done = pedding(6, done);
 
     request(app)
     .get('/user')

@@ -1,6 +1,8 @@
 userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](http://travis-ci.org/fengmk2/userauth) [![Coverage Status](https://coveralls.io/repos/fengmk2/userauth/badge.png)](https://coveralls.io/r/fengmk2/userauth)
 =======
 
+[![NPM](https://nodei.co/npm/userauth.png?downloads=true&stars=true)](https://nodei.co/npm/userauth/)
+
 ![logo](https://raw.github.com/fengmk2/userauth/master/logo.png)
 
 `connect` user auth abstraction layer middleware.
@@ -80,7 +82,7 @@ function userauth(match, options);
  * 1. unauth user, redirect to `$loginPath?redirect=$currentURL`
  * 2. user visit `$loginPath`, redirect to `options.loginURLForamter()` return login url.
  * 3. user visit $loginCallbackPath, handler login callback logic.
- * 4. If user login callback check success, will set `req.session[userField]`, 
+ * 4. If user login callback check success, will set `req.session[userField]`,
  *    and redirect to `$currentURL`.
  * 5. If login check callback error, next(err).
  * 6. user visit `$logoutPath`, set `req.session[userField] = null`, and redirect back.
@@ -90,19 +92,19 @@ function userauth(match, options);
 ## Authors
 
 ```bash
-$ git summary 
+$ git summary
 
  project  : userauth
  repo age : 7 months
  active   : 12 days
  commits  : 39
  files    : 12
- authors  : 
+ authors  :
     38  fengmk2                 97.4%
      1  tangyao                 2.6%
 ```
 
-## License 
+## License
 
 (The MIT License)
 

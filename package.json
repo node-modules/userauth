@@ -1,6 +1,6 @@
 {
   "name": "userauth",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "user auth abstraction layer middleware.",
   "main": "index.js",
   "scripts": {

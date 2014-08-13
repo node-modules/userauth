@@ -1,4 +1,9 @@
 
+1.0.0 / 2014-08-13
+==================
+
+ * fix deadlock redirect when getUser return empty user
+
 0.3.0 / 2014-02-21 
 ==================
 

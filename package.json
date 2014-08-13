@@ -4,37 +4,28 @@
   "description": "user auth abstraction layer middleware.",
   "main": "index.js",
   "scripts": {
-    "test": "make test-all",
-    "blanket": {
-      "pattern": "userauth/lib",
-      "data-cover-flags": {
-        "debug": false
-      }
-    },
-    "travis-cov": {
-      "threshold": 97
-    }
+    "test": "make test-cov"
   },
   "dependencies": {
-    "debug": "0.7.4"
+    "debug": "~1.0.4"
   },
   "devDependencies": {
-    "contributors": "*",
-    "should": "*",
+    "autod": "*",
     "blanket": "*",
-    "travis-cov": "*",
-    "coveralls": "*",
-    "mocha-lcov-reporter": "*",
-    "pedding": "*",
-    "supertest": "*",
-    "connect": "*",
-    "mm": "*",
-    "mocha": "*"
+    "connect": "~2.25.5",
+    "contributors": "*",
+    "istanbul": "*",
+    "mm": "~0.2.1",
+    "mocha": "*",
+    "pedding": "~1.0.0",
+    "should": "~4.0.4",
+    "supertest": "~0.13.0"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/fengmk2/userauth.git"
+    "url": "git://github.com/node-modules/userauth.git"
   },
+  "home": "https://github.com/node-modules/userauth",
   "keywords": [
     "userauth",
     "authMiddleware",
@@ -42,7 +33,7 @@
     "auth"
   ],
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 0.10.0"
   },
   "author": "fengmk2 <fengmk2@gmail.com>",
   "license": "MIT"

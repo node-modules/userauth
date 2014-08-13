@@ -76,7 +76,7 @@ describe('userauth.test.js', function () {
       },
       logoutCallback: function (req, res, user, callback) {
         process.nextTick(function () {
-          res.setHeader('X-Logout', 'logoutCallback header')
+          res.setHeader('X-Logout', 'logoutCallback header');
           if (user.logoutError) {
             return callback(new Error(user.logoutError));
           }
@@ -125,14 +125,35 @@ describe('userauth.test.js', function () {
     mm.restore();
   });
 
+  it('should GET /login redirect /mocklogin', function (done) {
+    request(app)
+    .get('/login')
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Location', /\/login\/callback$/)
+    .expect('Set-Cookie', /^connect\.sid/)
+    .expect('')
+    .expect(302, function (err, res) {
+      should.not.exist(err);
+      var cookie = res.headers['set-cookie'];
+
+      // should login redirect to /
+      request(app)
+      .get('/login/callback')
+      .set('Cookie', cookie)
+      .expect('Location', '/')
+      .expect('')
+      .expect(302, done);
+    });
+  });
+
   it('should request /login redirect to /mocklogin', function (done) {
     done = pedding(5, done);
 
     request(app)
     .get('/login')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
     .expect('Location', /\/login\/callback$/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -149,7 +170,7 @@ describe('userauth.test.js', function () {
 
     request(app)
     .get('/login?foo=bar')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
     .expect('Location', /\/login\/callback$/)
     .expect('')
     .expect(302, done);
@@ -157,14 +178,14 @@ describe('userauth.test.js', function () {
     request(app)
     .get('/login?foo=bar')
     .set('Accept', 'application/json')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
     .expect({ error: '401 Unauthorized' })
     .expect(401, done);
 
     request(app)
     .get('/login?redirect=user/index')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -180,8 +201,8 @@ describe('userauth.test.js', function () {
 
     request(app)
     .get('/login?redirect=/index2')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -201,7 +222,7 @@ describe('userauth.test.js', function () {
     .get('/login/callback')
     .set('mocklogin', 1)
     .expect('Location', '/')
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       var cookie = res.headers['set-cookie'][0];
@@ -219,8 +240,8 @@ describe('userauth.test.js', function () {
     request(app)
     .get('/login?redirect=')
     .set('Referer', 'http://demo.com/foo')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -238,8 +259,8 @@ describe('userauth.test.js', function () {
     request(app)
     .get('/login')
     .set('Referer', 'foo/bar')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -257,8 +278,8 @@ describe('userauth.test.js', function () {
     request(app)
     .get('/login')
     .set('Referer', '/foo/bar')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -276,8 +297,8 @@ describe('userauth.test.js', function () {
     request(app)
     .get('/login')
     .set('Referer', '/login')
-    .expect('Location', /^\/mocklogin\?redirect\=/)
-    .expect('Set-Cookie', /^connect\.sid\=/)
+    .expect('Location', /^\/mocklogin\?redirect/)
+    .expect('Set-Cookie', /^connect\.sid/)
     .expect('')
     .expect(302, function (err, res) {
       should.not.exist(err);
@@ -455,31 +476,25 @@ describe('userauth.test.js', function () {
 
     request(app)
     .get('/login/callback')
-    .set({ mockempty: '1' })
-    .expect('Location', '/')
-    .expect(302, function (err, res) {
-      var cookie = res.headers['set-cookie'];
-      request(app)
-      .get('/user/')
-      .set({ Cookie: cookie })
-      .expect('Location', '/login?redirect=%2Fuser%2F')
-      .expect(302, done);
+    .set({ mockempty: '1', referer: '/userauth' })
+    .expect(500, function (err, res) {
+      should.not.exist(err);
+      res.body.should.eql({
+        error: 'Login callback, but still can\'t get the user',
+        message: 'GET /login/callback'
+      });
+      done();
     });
 
     request(app)
     .get('/login/callback')
-    .set({ Cookie: 'cookie2=wrong', mockempty: '1' })
+    .set({ Cookie: 'cookie2=wrong', mockempty: '1', referer: '/userauth' })
     .set('Accept', 'application/json')
-    .expect('Location', '/')
-    .expect({ error: '401 Unauthorized' })
-    .expect(401, function (err, res) {
-      var cookie = res.headers['set-cookie'];
-      request(app)
-      .get('/user/')
-      .set({ Cookie: cookie })
-      .expect('Location', '/login?redirect=%2Fuser%2F')
-      .expect(302, done);
-    });
+    .expect({
+      error: 'Login callback, but still can\'t get the user',
+      message: 'GET /login/callback'
+    })
+    .expect(500, done);
   });
 
   it('should logout success', function (done) {
@@ -527,7 +542,7 @@ describe('userauth.test.js', function () {
     });
   });
 
-  it('should mock loginCallback error', function (done) {
+  it('should mock redirect loginCallback error', function (done) {
     request(app)
     .get('/login/callback')
     .set('mocklogin', 1)
@@ -563,12 +578,13 @@ describe('userauth.test.js', function () {
     .get('/user/foo')
     .set('mocklogin', 1)
     .set('mocklogout_callbackerror', 'mock logout callback error')
-    .expect('X-Logout', 'logoutCallback header')
-    .expect(302, function (err, res) {
+    .expect(200, function (err, res) {
+      should.not.exist(err);
       var cookie = res.headers['set-cookie'][0];
       request(app)
       .get('/logout')
       .set('Cookie', cookie)
+      .expect('X-Logout', 'logoutCallback header')
       .expect({
         error: 'mock logout callback error',
         message: 'GET /logout'
@@ -577,7 +593,7 @@ describe('userauth.test.js', function () {
     });
   });
 
-  it('should mock loginCallback error', function (done) {
+  it('should mock options.loginCallback error', function (done) {
     request(app)
     .get('/user/foo')
     .set('mocklogin', 1)

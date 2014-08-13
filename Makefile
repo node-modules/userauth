@@ -4,7 +4,7 @@ TIMEOUT = 1000
 MOCHA_OPTS =
 
 install:
-	@npm install --registry=http://r.cnpmjs.org
+	@npm install --registry=https://registry.npm.taobao.org
 
 test: install
 	@NODE_ENV=test ./node_modules/.bin/mocha \
@@ -13,20 +13,35 @@ test: install
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-cov:
-	@rm -f coverage.html
-	@$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=html-cov > coverage.html
-	@$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=travis-cov
-	@ls -lh coverage.html
+test-cov cov: install
+	@NODE_ENV=test node --harmony \
+		node_modules/.bin/istanbul cover --preserve-comments \
+		./node_modules/.bin/_mocha \
+		-- \
+		--reporter $(REPORTER) \
+		--timeout $(TIMEOUT) \
+		$(MOCHA_OPTS) \
+		$(TESTS)
 
-test-coveralls:
-	@$(MAKE) test
-	@echo TRAVIS_JOB_ID $(TRAVIS_JOB_ID)
-	@$(MAKE) test MOCHA_OPTS='--require blanket' REPORTER=mocha-lcov-reporter | ./node_modules/.bin/coveralls
+test-travis: install
+	@NODE_ENV=test node --harmony \
+		node_modules/.bin/istanbul cover --preserve-comments \
+		./node_modules/.bin/_mocha \
+		--report lcovonly \
+		-- \
+		--reporter dot \
+		--timeout $(TIMEOUT) \
+		$(MOCHA_OPTS) \
+		$(TESTS)
+
 
 test-all: test test-cov
 
 contributors: install
 	@./node_modules/.bin/contributors -f plain -o AUTHORS
+
+autod: install
+	@./node_modules/.bin/autod -w --prefix "~"
+	@$(MAKE) install
 
 .PHONY: test

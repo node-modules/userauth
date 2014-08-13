@@ -1,16 +1,30 @@
-userauth [![Build Status](https://secure.travis-ci.org/fengmk2/userauth.png)](http://travis-ci.org/fengmk2/userauth) [![Coverage Status](https://coveralls.io/repos/fengmk2/userauth/badge.png)](https://coveralls.io/r/fengmk2/userauth)
-=======
+# userauth
 
-[![NPM](https://nodei.co/npm/userauth.png?downloads=true&stars=true)](https://nodei.co/npm/userauth/)
+[![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+[![Gittip][gittip-image]][gittip-url]
+[![David deps][david-image]][david-url]
 
-![logo](https://raw.github.com/fengmk2/userauth/master/logo.png)
+[npm-image]: https://img.shields.io/npm/v/userauth.svg?style=flat
+[npm-url]: https://npmjs.org/package/userauth
+[travis-image]: https://img.shields.io/travis/node-modules/userauth.svg?style=flat
+[travis-url]: https://travis-ci.org/node-modules/userauth
+[coveralls-image]: https://img.shields.io/coveralls/node-modules/userauth.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/node-modules/userauth?branch=master
+[gittip-image]: https://img.shields.io/gittip/fengmk2.svg?style=flat
+[gittip-url]: https://www.gittip.com/fengmk2/
+[david-image]: https://img.shields.io/david/node-modules/userauth.svg?style=flat
+[david-url]: https://david-dm.org/node-modules/userauth
 
-`connect` user auth abstraction layer middleware.
+![logo](https://raw.github.com/node-modules/userauth/master/logo.png)
+
+`connect` or `express` user auth abstraction layer middleware.
 
 ## Install
 
 ```bash
-$ npm install userauth
+$ npm install userauth --save
 ```
 
 ## Usage
@@ -108,7 +122,7 @@ $ git summary
 
 (The MIT License)
 
-Copyright (c) 2012 - 2013 fengmk2 &lt;fengmk2@gmail.com&gt;
+Copyright (c) 2012 - 2014 fengmk2 &lt;fengmk2@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

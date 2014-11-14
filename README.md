@@ -103,26 +103,11 @@ function userauth(match, options);
  */
 ```
 
-## Authors
-
-```bash
-$ git summary
-
- project  : userauth
- repo age : 7 months
- active   : 12 days
- commits  : 39
- files    : 12
- authors  :
-    38  fengmk2                 97.4%
-     1  tangyao                 2.6%
-```
-
 ## License
 
 (The MIT License)
 
-Copyright (c) 2012 - 2014 fengmk2 &lt;fengmk2@gmail.com&gt;
+Copyright (c) 2012 - 2014 fengmk2 <fengmk2@gmail.com> other contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

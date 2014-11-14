@@ -1,10 +1,14 @@
-/*!
+/**!
  * userauth - test/userauth.test.js
- * Copyright(c) 2012 fengmk2 <fengmk2@gmail.com>
+ *
+ * Copyright(c) fengmk2 and other contributors.
  * MIT Licensed
+ *
+ * Authors:
+ *   fengmk2 <fengmk2@gmail.com> (http://fengmk2.github.com)
  */
 
-"use strict";
+'use strict';
 
 /**
  * Module dependencies.
@@ -16,7 +20,6 @@ var userauth = require('../');
 var should = require('should');
 var request = require('supertest');
 var connect = require('connect');
-
 
 describe('userauth.test.js', function () {
   var app = connect(
@@ -523,6 +526,14 @@ describe('userauth.test.js', function () {
     .set('Referer', '/logout?foo=bar')
     .set({ Cookie: 'cookie2=1234' })
     .expect('Location', '/')
+    .expect(302, done);
+  });
+
+  it('should logout with redirect param', function (done) {
+    request(app)
+    .get('/logout?redirect=' + encodeURIComponent('/foo?q=123&b=%E5%93%88%E5%93%88'))
+    .set({ Cookie: 'cookie2=1234' })
+    .expect('Location', '/foo?q=123&b=%E5%93%88%E5%93%88')
     .expect(302, done);
   });
 

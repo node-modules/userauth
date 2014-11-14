@@ -7,11 +7,10 @@
     "test": "make test-cov"
   },
   "dependencies": {
-    "debug": "~1.0.4"
+    "debug": "~2.1.0"
   },
   "devDependencies": {
     "autod": "*",
-    "blanket": "*",
     "connect": "~2.25.5",
     "contributors": "*",
     "istanbul": "*",

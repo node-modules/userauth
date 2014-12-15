@@ -1,4 +1,10 @@
 
+1.0.1 / 2014-12-15
+==================
+
+ * make sure session key dont start with '_'
+ * add logout with redirect param test case
+
 1.0.0 / 2014-08-13
 ==================
 

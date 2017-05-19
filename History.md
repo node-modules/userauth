@@ -1,4 +1,9 @@
 
+1.0.2 / 2017-05-19
+==================
+
+  * [Snyk Update] New fixes for 1 vulnerable dependency path (#10)
+
 1.0.1 / 2014-12-15
 ==================
 

@@ -3,17 +3,14 @@ REPORTER = spec
 TIMEOUT = 1000
 MOCHA_OPTS =
 
-install:
-	@npm install --registry=https://registry.npm.taobao.org
-
-test: install
+test:
 	@NODE_ENV=test ./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		--timeout $(TIMEOUT) \
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-cov cov: install
+test-cov cov:
 	@NODE_ENV=test node --harmony \
 		node_modules/.bin/istanbul cover --preserve-comments \
 		./node_modules/.bin/_mocha \
@@ -23,7 +20,7 @@ test-cov cov: install
 		$(MOCHA_OPTS) \
 		$(TESTS)
 
-test-travis: install
+test-travis:
 	@NODE_ENV=test node --harmony \
 		node_modules/.bin/istanbul cover --preserve-comments \
 		./node_modules/.bin/_mocha \
@@ -37,11 +34,11 @@ test-travis: install
 
 test-all: test test-cov
 
-contributors: install
+contributors:
 	@./node_modules/.bin/contributors -f plain -o AUTHORS
 
-autod: install
-	@./node_modules/.bin/autod -w --prefix "~"
+autod:
+	@./node_modules/.bin/autod -w --prefix "^"
 	@$(MAKE) install
 
 .PHONY: test

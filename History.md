@@ -1,4 +1,10 @@
 
+1.0.3 / 2017-08-07
+==================
+
+**fixes**
+  * [[`58d62fd`](http://github.com/node-modules/userauth/commit/58d62fd1c51b8b0e65ce9666625e3fa22a9b6354)] - fix: don't use path.join on windows (#11) (fengmk2 <<fengmk2@gmail.com>>)
+
 1.0.2 / 2017-05-19
 ==================
 
